@@ -7,7 +7,7 @@ import argparse
 import sys
 from lib.core.settings import VERSION
 
-
+# 命令行参数解析
 def cmdLineParser():
     parser = argparse.ArgumentParser(description='powered by cdxy <mail:i@cdxy.me> ',
                                      usage='python POC-T.py -s bingc -aZ "port:8080"',

@@ -8,10 +8,13 @@ from lib.core.datatype import AttribDict
 
 logger = MY_LOGGER
 
+# 存放文件/文件夹的绝对路径
 paths = AttribDict()
 
+# 命令行选项
 cmdLineOptions = AttribDict()
 
+# 
 conf = AttribDict()
 
 th = AttribDict()

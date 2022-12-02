@@ -18,11 +18,12 @@ from lib.core.enums import EXIT_STATUS, ENGINE_MODE_STATUS
 from thirdparty.termcolor.termcolor import colored
 from thirdparty.odict.odict import OrderedDict
 
-
+# 添加文件/文件夹的绝对路径到paths中
 def setPaths():
     """
     Sets absolute paths for project directories and files
     """
+    # 添加文件夹路径到paths中，如果文件夹不存在则新建文件夹
     root_path = paths.ROOT_PATH
     paths.DATA_PATH = os.path.join(root_path, "data")
     paths.SCRIPT_PATH = os.path.join(root_path, "script")
@@ -35,10 +36,10 @@ def setPaths():
     if not os.path.exists(paths.DATA_PATH):
         os.mkdir(paths.DATA_PATH)
 
+    # 添加文件路径到paths中，如果文件不存在则抛出异常
     paths.WEAK_PASS = os.path.join(paths.DATA_PATH, "pass100.txt")
     paths.LARGE_WEAK_PASS = os.path.join(paths.DATA_PATH, "pass1000.txt")
     paths.UA_LIST_PATH = os.path.join(paths.DATA_PATH, "user-agents.txt")
-
     if os.path.isfile(paths.CONFIG_PATH) and os.path.isfile(paths.WEAK_PASS) and os.path.isfile(
             paths.LARGE_WEAK_PASS) and os.path.isfile(paths.UA_LIST_PATH):
         pass
@@ -73,6 +74,7 @@ def banner():
     Function prints banner with its version
     """
     _ = BANNER
+    # 如果LOGGER_HANDLER不具有属性is_tty，那么将BANNER中的 \033.+?m 替换为空
     if not getattr(LOGGER_HANDLER, "is_tty", False):
         _ = re.sub("\033.+?m", "", _)
     dataToStdout(_)

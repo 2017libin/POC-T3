@@ -7,7 +7,7 @@ import copy
 import types
 from lib.core.exception import ToolkitDataException
 
-
+# 继承dict，实现通过.访问元素，而不需要[]
 class AttribDict(dict):
     """
     This class defines the project object, inheriting from Python data

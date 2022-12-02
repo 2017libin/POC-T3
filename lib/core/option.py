@@ -15,11 +15,23 @@ from lib.core.register import Register
 
 
 def initOptions(args):
+    # 检查是否需要更新版本
     checkUpdate(args)
+    
+    # 检查是否需要输出脚本信息
+    # 如果需要输出，输出结束后结束程序
     checkShow(args)
+    
+    # 
     EngineRegister(args)
+    
+    # 
     ScriptRegister(args)
+    
+    # 
     TargetRegister(args)
+    
+    # 
     ApiRegister(args)
     Output(args)
     Misc(args)
@@ -33,13 +45,17 @@ def checkUpdate(args):
 def checkShow(args):
     show_scripts = args.show_scripts
     if show_scripts:
+        # 获取所有paths.SCRIPT_PATH目录下以.py结尾的文件的绝对路径
         module_name_list = glob.glob(os.path.join(paths.SCRIPT_PATH, '*.py'))
         msg = 'Script Name (total:%s)\n' % str(len(module_name_list) - 1)
         for each in module_name_list:
-            _str = os.path.splitext(os.path.split(each)[1])[0]
-            if _str not in ['__init__']:
-                msg += '  %s\n' % _str
-        sys.exit(logger.info(msg))
+            # 分隔路径和带后缀的文件名
+            filename_ext = os.path.split(each)[1]
+            # 分隔文件名和后缀
+            filename = os.path.splitext(filename_ext)[0]
+            if filename != '__init__':
+                msg += '  %s\n' % filename
+        sys.exit(logger.info(msg))  # 输出msg并且结束程序
 
 
 def EngineRegister(args):
@@ -62,6 +78,7 @@ def EngineRegister(args):
     r.run()
 
     if 0 < thread_num < 101:
+        # th和conf新增属性THREADS_NUM
         th.THREADS_NUM = conf.THREADS_NUM = thread_num
     else:
         msg = 'Invalid input in [-t], range: 1 to 100'

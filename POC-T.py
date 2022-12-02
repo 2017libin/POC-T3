@@ -5,6 +5,8 @@
 
 from lib.utils import versioncheck  # this has to be the first non-standard import
 from lib.cli import main
+from lib.debug import debugMain
 
 if __name__ == '__main__':
     main()
+    # debugMain()

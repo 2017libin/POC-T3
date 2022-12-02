@@ -34,6 +34,8 @@ from lib.core.exception import RegisterDataException, RegisterMutexException, Re
 
 
 class Register:
+    # mutex是互斥开关
+    # mutex_errmsg是错误提示
     def __init__(self, start=1, stop=1, mutex_errmsg=None, mutex=True):
         self.targets = []
         self.mutex = mutex
@@ -56,6 +58,7 @@ class Register:
         self.__args = args
         self.__kwargs = kwargs
 
+    # 执行perform(*args, **kwargs)
     def run(self):
         self.__pretreat()
         for target in self.verified:
@@ -64,8 +67,11 @@ class Register:
                 raise RegisterDataException(msg)
             target.get('perform')(*target.get('args'), **target.get('kwargs'))
 
+    # 检查target的trigger的类型和值，并添加target到verified中
     def __pretreat(self):
+        # 检查target!=0、start<end
         self.__input_vector_check()
+        
         for __target in self.targets:
             __trigger = __target.get('trigger')
             if type(__trigger) is types.BooleanType or type(__trigger) is types.StringType:
@@ -76,6 +82,7 @@ class Register:
                 raise RegisterValueException(msg)
         self.__mutex_check()
 
+    # verified的范围必须在start和stop之间
     def __mutex_check(self):
         if self.mutex:
             if len(self.verified) < self.start or len(self.verified) > self.stop:
@@ -84,15 +91,18 @@ class Register:
                 else:
                     sys.exit(logger.error(self.mutex_errmsg))
 
+    # 检查target的数量、start和end的关系
     def __input_vector_check(self):
         if type(self.stop) is types.IntType and type(self.start) is types.IntType and type(
                 self.mutex) is types.BooleanType:
             pass
         else:
             raise RegisterValueException('Register init func type error')
+        
         if len(self.targets) is 0:
             msg = 'no target'
             raise RegisterDataException(msg)
+        
         if self.start > self.stop:
             msg = 'start > stop'
             raise RegisterDataException(msg)

@@ -9,7 +9,7 @@ from lib.parse.cmdline import cmdLineParser
 from lib.core.option import initOptions
 from lib.controller.loader import loadModule, loadPayloads
 from lib.core.common import setPaths, banner, systemQuit, openBrowser
-from lib.core.data import paths, conf, logger, cmdLineOptions
+from lib.core.data import paths, conf, logger, cmdLineOptions  # 这四个变量是类型为dict的实例
 from lib.core.enums import EXIT_STATUS
 from lib.core.settings import IS_WIN
 from lib.core.exception import ToolkitUserQuitException
@@ -24,6 +24,7 @@ def main():
     Main function of POC-T when running from command line.
     """
     try:
+        # 添加属性ROOT_PATH
         paths.ROOT_PATH = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
         try:
             os.path.isdir(paths.ROOT_PATH)
@@ -32,13 +33,19 @@ def main():
             errMsg += "Please move the project root directory to another location"
             logger.error(errMsg)
             raise SystemExit
+        
+        # 将data、script、ooutput等绝对路径添加到paths中
         setPaths()
 
+        # 将命令选项进行解析，并将结果添加到cmdLineOptions中
         cmdLineOptions.update(cmdLineParser().__dict__)
+        
         initOptions(cmdLineOptions)
 
         if IS_WIN:
             winowsColorInit()
+            
+        # 打印banner信息
         banner()
 
         loadModule()

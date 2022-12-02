@@ -8,6 +8,7 @@ import sys
 
 from lib.core.enums import CUSTOM_LOGGING
 
+# 等级从高到低为 9、8、7、6
 logging.addLevelName(CUSTOM_LOGGING.SYSINFO, "*")
 logging.addLevelName(CUSTOM_LOGGING.SUCCESS, "+")
 logging.addLevelName(CUSTOM_LOGGING.ERROR, "-")
@@ -20,6 +21,7 @@ try:
     from thirdparty.ansistrm.ansistrm import ColorizingStreamHandler
 
     try:
+        # 生成一个输出带有颜色的handdler
         LOGGER_HANDLER = ColorizingStreamHandler(sys.stdout)
         LOGGER_HANDLER.level_map[logging.getLevelName("*")] = (None, "cyan", False)
         LOGGER_HANDLER.level_map[logging.getLevelName("+")] = (None, "green", False)
