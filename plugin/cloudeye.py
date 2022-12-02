@@ -14,10 +14,10 @@ Usage:
         requests.get('http://' + a, timeout=1)
     except Exception:
         pass
-    print c.verifyDNS(delay=0)
-    print c.verifyHTTP(delay=0)
-    print c.getDnsRecord(delay=0)
-    print c.getHttpRecord(delay=0)
+    print( c.verifyDNS(delay=0))
+    print( c.verifyHTTP(delay=0))
+    print( c.getDnsRecord(delay=0))
+    print( c.getHttpRecord(delay=0))
 """
 
 import random

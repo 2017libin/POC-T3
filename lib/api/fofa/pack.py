@@ -20,7 +20,7 @@ def check(email, key):
             response = urllib.urlopen(auth_url)
             if response.code == 200:
                 return True
-        except Exception, e:
+        except Exception as e:
             # logger.error(e)
             return False
     return False
@@ -60,7 +60,7 @@ def FofaSearch(query, limit=100, offset=0):  # TODO 付费获取结果的功能�
                 result.append(item[0])
             if resp.get('size') >= 100:
                 logger.info("{0} items found! just 100 returned....".format(resp.get('size')))
-    except Exception, e:
+    except Exception as e:
         sys.exit(logger.error(getSafeExString(e)))
     finally:
         return result

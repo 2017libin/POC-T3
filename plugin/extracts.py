@@ -28,7 +28,7 @@ def getIP(content, remove_duplicate=True, remove_private=False):
      127.0.0.0 - 127.255.255.255
 
     example:
-     > print getIP('ffeac12.2.2.2asf^&10.10\n.1.1ffa2\n')
+     > print( getIP('ffeac12.2.2.2asf^&10.10\n.1.1ffa2\n'))
      ['12.2.2.2','10.10.1.1']
 
     """

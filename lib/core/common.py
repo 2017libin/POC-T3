@@ -137,11 +137,11 @@ def pollProcess(process, suppress_errors=False):
         if returncode is not None:
             if not suppress_errors:
                 if returncode == 0:
-                    print " done\n"
+                    print( " done\n")
                 elif returncode < 0:
-                    print " process terminated by signal %d\n" % returncode
+                    print( " process terminated by signal %d\n" % returncode)
                 elif returncode > 0:
-                    print " quit unexpectedly with return code %d\n" % returncode
+                    print( " quit unexpectedly with return code %d\n" % returncode)
             break
 
 
