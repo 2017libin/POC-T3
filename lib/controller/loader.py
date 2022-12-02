@@ -14,7 +14,7 @@ from lib.core.exception import ToolkitValueException
 from lib.controller.api import runApi
 from thirdparty.IPy import IPy
 
-
+# 设置 th.module_obj
 def loadModule():
     _name = conf.MODULE_NAME
     msg = 'Load custom script: %s' % _name
@@ -32,7 +32,7 @@ def loadModule():
                    % (_name, '[Error Msg]: ' + str(e), 'Maybe you can download this module from pip or easy_install')
         sys.exit(logger.error(errorMsg))
 
-
+# 根据target的模式，从不同的方式导入target
 def loadPayloads():
     infoMsg = 'Initialize targets...'
     logger.success(infoMsg)
@@ -47,7 +47,6 @@ def loadPayloads():
         single_target_mode()
     elif conf.TARGET_MODE is TARGET_MODE_STATUS.API:
         api_mode()
-
     else:
         raise ToolkitValueException('conf.TARGET_MODE value ERROR.')
     logger.success('Total: %s' % str(th.queue.qsize()))

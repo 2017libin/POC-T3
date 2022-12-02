@@ -79,12 +79,13 @@ def banner():
         _ = re.sub("\033.+?m", "", _)
     dataToStdout(_)
 
-
+# 输出有色消息，如果是thread模式的话需要上锁来实现线程同步
 def dataToStdout(data, bold=False):
     """
     Writes text to the stdout (console) stream
     """
     if conf.SCREEN_OUTPUT:
+        # 如果使用的engine是thread，需要给进行上锁来实现线程同步
         if conf.ENGINE is ENGINE_MODE_STATUS.THREAD:
             logging._acquireLock()
 
@@ -93,7 +94,8 @@ def dataToStdout(data, bold=False):
         else:
             message = data
 
-        sys.stdout.write(setColor(message, bold))
+        # 写入消息
+        sys.stdout.write(setColor(message, bold))  
 
         try:
             sys.stdout.flush()

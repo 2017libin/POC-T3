@@ -13,7 +13,7 @@ from lib.utils.update import update
 from lib.core.enums import API_MODE_NAME
 from lib.core.register import Register
 
-
+# 为conf添加不同的属性
 def initOptions(args):
     # 检查是否需要更新版本
     checkUpdate(args)
@@ -22,18 +22,22 @@ def initOptions(args):
     # 如果需要输出，输出结束后结束程序
     checkShow(args)
     
-    # 
-    EngineRegister(args)
+    # Register就是根据命令行参数，来为conf添加属性
+    # 设置使用的多线程
+    EngineRegister(args)  # 设置conf.ENGINE
     
-    # 
+    # 设置脚本
     ScriptRegister(args)
     
-    # 
+    # 扫描目标
     TargetRegister(args)
     
-    # 
+    # 生成扫描目标的搜索引擎
     ApiRegister(args)
+
+    # 输出方式
     Output(args)
+    
     Misc(args)
 
 
@@ -57,8 +61,11 @@ def checkShow(args):
                 msg += '  %s\n' % filename
         sys.exit(logger.info(msg))  # 输出msg并且结束程序
 
-
+# 设置 conf.ENGINE：ENGINE_MODE_STATUS.THREAD 或者 ENGINE_MODE_STATUS.GEVENT
+# 设置 conf.THREADS_NUM：0 < thread_num < 101
+# 设置 th.THREADS_NUM：0 < thread_num < 101
 def EngineRegister(args):
+    # 设置使用的多线程方式以及线程数
     thread_status = args.engine_thread
     gevent_status = args.engine_gevent
     thread_num = args.thread_num
@@ -69,14 +76,16 @@ def EngineRegister(args):
     def __gevent():
         conf.ENGINE = ENGINE_MODE_STATUS.GEVENT
 
+    # 默认使用thread
     conf.ENGINE = ENGINE_MODE_STATUS.THREAD  # default choice
 
     msg = 'Use [-eT] to set Multi-Threaded mode or [-eG] to set Coroutine mode.'
+    # 两个都为false或者选择了其中一个ENGINE
     r = Register(mutex=True, start=0, stop=1, mutex_errmsg=msg)
     r.add(__thread, thread_status)
     r.add(__gevent, gevent_status)
     r.run()
-
+    # 检查线程数
     if 0 < thread_num < 101:
         # th和conf新增属性THREADS_NUM
         th.THREADS_NUM = conf.THREADS_NUM = thread_num
@@ -84,7 +93,8 @@ def EngineRegister(args):
         msg = 'Invalid input in [-t], range: 1 to 100'
         sys.exit(logger.error(msg))
 
-
+# 设置conf.MODULE_NAME：模块名，例如 tets.py
+# 设置conf.MODULE_FILE_PATH：模块的绝对路径，例如/home/chase511/code/py-code/POC-T/script/test.py
 def ScriptRegister(args):
     input_path = args.script_name
 
@@ -122,7 +132,19 @@ def ScriptRegister(args):
             msg = 'Script [%s] not exist. Use [--show] to view all available script in ./script/' % input_path
             sys.exit(logger.error(msg))
 
+# 根据不同的target类型来设置conf
 
+# 类型1：随机生成或者从命令行/文件读取target（目标）
+    # target_file：从文件读取目标
+    # target_single：单一扫描目标
+    # target_network：生成指定网络的IP
+    # target_array：生成指定范围的整型数组
+
+# 类型2：通过API（搜索引擎）生成target
+    # api_zoomeye
+    # api_shodan
+    # api_google
+    # api_fofa
 def TargetRegister(args):
     input_file = args.target_file
     input_single = args.target_single
@@ -195,7 +217,7 @@ def TargetRegister(args):
         conf.API_DORK = api_fofa
 
     msg = 'Please load targets with [-iS|-iA|-iF|-iN] or use API with [-aZ|-aS|-aG|-aF]'
-    r = Register(mutex=True, mutex_errmsg=msg)
+    r = Register(mutex=True, mutex_errmsg=msg)  # 默认start=end=1
     r.add(__file, input_file)
     r.add(__network, input_network)
     r.add(__array, input_array)
@@ -206,13 +228,17 @@ def TargetRegister(args):
     r.add(__fofa, api_fofa)
     r.run()
 
-
+# 设置conf.offset：
+# 设置conf.limit
+# 如果API类型为ZOOMEYE，设置conf.ZOOMEYE_SEARCH_TYPE
+# 如果API类型为GOOGLE，设置conf.GOOGLE_PROXY
 def ApiRegister(args):
     search_type = args.search_type
     offset = args.api_offset
     google_proxy = args.google_proxy
     api_limit = args.api_limit
 
+    # 如果conf不具有API_MODE属性，也就是是通过API生成target
     if not 'API_MODE' in conf:
         return
 
@@ -243,23 +269,31 @@ def ApiRegister(args):
     elif conf.API_MODE is API_MODE_NAME.GOOGLE:
         conf.GOOGLE_PROXY = google_proxy
 
-
+# 设置conf.SCREEN_OUTPUT
+# 设置conf.FILE_OUTPUT
+# 设置conf.OUTPUT_FILE_PATH
 def Output(args):
     output_file = args.output_path
     file_status = args.output_file_status
     screen_status = args.output_screen_status
     browser = args.open_browser
 
+    # not file_status为真：表示不输出到文件
+    # output_file非空：表示设置了输出文件名
     if not file_status and output_file:
         msg = 'Cannot use [-oF] and [-o] together, please read the usage with [-h].'
         sys.exit(logger.error(msg))
 
+    # not file_status为真：表示不输出到文件
+    # browser为真：表示打开浏览器
     if not file_status and browser:
         msg = '[--browser] is based on file output, please remove [-oF] in your command and try again.'
         sys.exit(logger.error(msg))
 
     conf.SCREEN_OUTPUT = screen_status
     conf.FILE_OUTPUT = file_status
+    # 如果指定文件名，则根据文件名生成绝对路径
+    # 如果不指定文件名，则随机生成文件名并扩充为绝对路径
     conf.OUTPUT_FILE_PATH = os.path.abspath(output_file) if output_file else \
         os.path.abspath(
             os.path.join(
@@ -267,7 +301,8 @@ def Output(args):
                     '[%Y%m%d-%H%M%S]', time.localtime(
                         time.time())) + conf.MODULE_NAME + '.txt'))
 
-
+# 设置conf.SINGLE_MODE
+# 设置conf.OPEN_BROWSER
 def Misc(args):
     conf.SINGLE_MODE = args.single_mode
     conf.OPEN_BROWSER = args.open_browser

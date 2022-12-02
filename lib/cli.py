@@ -40,17 +40,23 @@ def main():
         # 将命令选项进行解析，并将结果添加到cmdLineOptions中
         cmdLineOptions.update(cmdLineParser().__dict__)
         
+        # 根据命令行参数来设置conf
         initOptions(cmdLineOptions)
-
+        
+        # 如果是WIN平台
         if IS_WIN:
             winowsColorInit()
             
         # 打印banner信息
         banner()
 
+        # 设置th.module_obj
         loadModule()
+        
+        # 设置th.queue，存入target
         loadPayloads()
 
+        # 
         run()
 
         if conf.OPEN_BROWSER:
@@ -61,7 +67,7 @@ def main():
     except ToolkitMissingPrivileges, e:
         logger.error(e)
         systemQuit(EXIT_STATUS.ERROR_EXIT)
-
+    
     except ToolkitSystemException, e:
         logger.error(e)
         systemQuit(EXIT_STATUS.ERROR_EXIT)
