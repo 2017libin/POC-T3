@@ -185,7 +185,7 @@ def getUnicode(value, encoding=None, noneToNull=False):
         while True:
             try:
                 return unicode(value, encoding or UNICODE_ENCODING)
-            except UnicodeDecodeError, ex:
+            except UnicodeDecodeError as ex:
                 try:
                     return unicode(value, UNICODE_ENCODING)
                 except Exception:
@@ -260,7 +260,7 @@ def getFileItems(filename, commentPrefix='#', unicode_=True, lowercase=False, un
                     else:
                         retVal.append(line)
 
-    except (IOError, OSError, MemoryError), ex:
+    except (IOError, OSError, MemoryError) as ex:
         errMsg = "something went wrong while trying "
         errMsg += "to read the content of file '%s' ('%s')" % (filename, ex)
         raise ToolkitSystemException(errMsg)

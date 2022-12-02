@@ -3,7 +3,7 @@
 # project = https://github.com/Xyntax/POC-T
 # author = i@cdxy.me
 
-import Queue
+import queue as Queue
 import sys
 import imp
 import os

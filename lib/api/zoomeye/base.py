@@ -68,7 +68,7 @@ class ZoomEye(object):
         param: page
                total page(s) number
         param: resource
-               set a search resource type, ex: [web, host]
+               set a search resource type,ex: [web, host]
         param: facet
                ex: [app, device]
                A comma-separated list of properties to get summary information

@@ -3,7 +3,7 @@
 # project = https://github.com/Xyntax/POC-T
 # author = i@cdxy.me
 
-import urlparse
+import urllib.parse as urlparse
 
 
 def get_domain(url):

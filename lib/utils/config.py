@@ -3,7 +3,8 @@
 # project = https://github.com/Xyntax/POC-T
 # author = i@cdxy.me
 
-import ConfigParser
+# 为了兼容py2
+import configparser as ConfigParser
 from lib.core.data import paths, logger
 from lib.core.common import getSafeExString
 
