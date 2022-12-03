@@ -16,6 +16,7 @@ from lib.api.fofa.pack import FofaSearch
 
 def runApi():
     output = conf.API_OUTPUT
+    # dork：搜索语法
     dork = conf.API_DORK
     limit = conf.API_LIMIT
     logger.info('Activate %s API' % conf.API_MODE)
@@ -29,7 +30,7 @@ def runApi():
         anslist = FofaSearch(query=dork, limit=limit, offset=conf.API_OFFSET)
     else:
         raise ToolkitValueException('Unknown API mode')
-
+    
     tmpIpFile = os.path.join(output, '%s.txt' % (time.strftime('%Y%m%d%H%M%S')))
     with open(tmpIpFile, 'w') as fp:
         for each in anslist:

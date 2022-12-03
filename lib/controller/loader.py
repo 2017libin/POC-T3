@@ -83,7 +83,7 @@ def api_mode():
     conf.API_OUTPUT = os.path.join(paths.DATA_PATH, conf.API_MODE)
     if not os.path.exists(conf.API_OUTPUT):
         os.mkdir(conf.API_OUTPUT)
-
+    
     file = runApi()
     for line in open(file):
         sub = line.strip()

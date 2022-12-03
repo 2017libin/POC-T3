@@ -18,6 +18,7 @@ class ShodanBase:
         self.api_key = None
         self.result = None
 
+    # 从toolkit.conf文件中读取shodan API key
     def login(self):
         msg = 'Trying to login with credentials in config file: %s.' % paths.CONFIG_PATH
         logger.info(msg)
@@ -32,6 +33,7 @@ class ShodanBase:
 
     def account_info(self):
         try:
+            # 创建一个
             api = shodan.Shodan(self.api_key)
             account_info = api.info()
             msg = "Available Shodan query credits: %d" % account_info.get('query_credits')
@@ -46,7 +48,7 @@ class ShodanBase:
             result = api.search(query=self.query, offset=self.offset, limit=self.limit)
         except APIError as e:
             sys.exit(logger.error(e))
-
+        
         if 'matches' in result:
             anslist = []
             for match in result.get('matches'):
