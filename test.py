@@ -1,5 +1,5 @@
 import shodan
-SHODAN_API_KEY = "3p8GQqpTsiyx84KgKnnH8asN46Qqb8zO"
+SHODAN_API_KEY = ""
 api = shodan.Shodan(SHODAN_API_KEY)
 try:
     results = api.search('Apache')
