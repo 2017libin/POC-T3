@@ -89,13 +89,13 @@ def dataToStdout(data, bold=False):
         if conf.ENGINE is ENGINE_MODE_STATUS.THREAD:
             logging._acquireLock()
 
-        if isinstance(data, unicode):
+        if isinstance(data, str):
             message = stdoutencode(data)
         else:
             message = data
 
         # 写入消息
-        sys.stdout.write(setColor(message, bold))  
+        sys.stdout.write(setColor(message, bold).decode())  
 
         try:
             sys.stdout.flush()

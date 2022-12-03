@@ -27,7 +27,7 @@ Usage:
 
 """
 
-import types
+# import types
 import sys
 from lib.core.data import logger
 from lib.core.exception import RegisterDataException, RegisterMutexException, RegisterValueException
@@ -74,7 +74,7 @@ class Register:
         
         for __target in self.targets:
             __trigger = __target.get('trigger')
-            if type(__trigger) is types.BooleanType or type(__trigger) is types.StringType:
+            if type(__trigger) == bool or type(__trigger) == str:
                 if __trigger:
                     self.verified.append(__target)
             else:
@@ -93,8 +93,8 @@ class Register:
 
     # 检查target的数量、start和end的关系
     def __input_vector_check(self):
-        if type(self.stop) is types.IntType and type(self.start) is types.IntType and type(
-                self.mutex) is types.BooleanType:
+        if type(self.stop) == int and type(self.start) == int and type(
+                self.mutex) == bool:
             pass
         else:
             raise RegisterValueException('Register init func type error')

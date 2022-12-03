@@ -70,7 +70,7 @@ class ColorizingStreamHandler(logging.StreamHandler):
 
     if os.name != 'nt':
         def output_colorized(self, message):
-            self.stream.write(message)
+            self.stream.write(message.decode())
     else:
         ansi_esc = re.compile(r'\x1b\[((?:\d+)(?:;(?:\d+))*)m')
 
