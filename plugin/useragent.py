@@ -33,7 +33,7 @@ def _init_UAlist(path):
 
     # TODO 此处 conf.RANDOM_UA 在其他地方暂时没有用到
     conf.RANDOM_UA = True
-    th.UA_LIST = getFileItems(path)
+    th.UA_LIST = getFileItems(path)  # 从文件中读取user agent
 
     successMsg = "Total: %d" % len(th.UA_LIST)
     logger.info(successMsg)

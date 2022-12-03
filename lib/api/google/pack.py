@@ -53,6 +53,7 @@ def _initHttpClient():
 def GoogleSearch(query, limit, offset=0):
     key = ConfigFileParser().GoogleDeveloperKey()
     engine = ConfigFileParser().GoogleEngine()
+    
     if not key or not engine:
         msg = "Please config your 'developer_key' and 'search_enging' at toolkit.conf"
         sys.exit(logger.error(msg))
