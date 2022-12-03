@@ -29,7 +29,7 @@ class ShodanBase:
             logger.warning(msg)
             msg = 'Please input your Shodan API Key (https://account.shodan.io/).'
             logger.info(msg)
-            self.api_key = raw_input('API KEY > ').strip()
+            self.api_key = input('API KEY > ').strip()
 
     def account_info(self):
         try:

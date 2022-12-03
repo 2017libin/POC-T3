@@ -171,7 +171,7 @@ def TargetRegister(args):
                     warnMsg = "Loading %d targets, Maybe it's too much, continue? [y/N]" % (
                         int(_int[1]) - int(_int[0]))
                     logger.warning(warnMsg)
-                    a = raw_input()
+                    a = input()
                     if a in ('Y', 'y', 'yes'):
                         pass
                     else:
