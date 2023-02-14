@@ -45,7 +45,6 @@ def checkUpdate(args):
     if args.sys_update:
         update()
 
-
 def checkShow(args):
     show_scripts = args.show_scripts
     if show_scripts:
@@ -103,7 +102,7 @@ def ScriptRegister(args):
         msg = 'Use -s to load script. Example: [-s spider] or [-s ./script/spider.py]'
         sys.exit(logger.error(msg))
 
-    # handle input: "-s ./script/spider.py"
+    # handle input: "-s ./script/spider.py" 
     if os.path.split(input_path)[0]:
         if os.path.exists(input_path):
             if os.path.isfile(input_path):

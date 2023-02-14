@@ -80,6 +80,7 @@ def single_target_mode():
 
 
 def api_mode():
+    # api搜索结果的保存路径，路径不存在则新建
     conf.API_OUTPUT = os.path.join(paths.DATA_PATH, conf.API_MODE)
     if not os.path.exists(conf.API_OUTPUT):
         os.mkdir(conf.API_OUTPUT)

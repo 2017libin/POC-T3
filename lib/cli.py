@@ -34,7 +34,7 @@ def main():
             logger.error(errMsg)
             raise SystemExit
         
-        # 将data、script、ooutput等绝对路径添加到paths中
+        # 将data、script、output等绝对路径添加到paths中
         setPaths()
 
         # 将命令选项进行解析，并将结果添加到cmdLineOptions中

@@ -146,8 +146,10 @@ def autoCheck():
 
 
 def checkInvalidVersion():
+    print(f"coming in ...")
     command = 'python3 POC-T.py -h'
     process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+    print(process.stdout.read())
     o = process.stdout.read()
     e = process.stderr.read()
     if autoCheckResult(o,e, ['[CRITICAL] incompatible Python version'], []):
@@ -191,7 +193,6 @@ def debugMain():
     except KeyboardInterrupt:
         exit('User quit!')
     return
-
 
 if __name__ == '__main__':
     debugMain()
