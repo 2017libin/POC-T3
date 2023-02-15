@@ -14,17 +14,20 @@ from lib.core.exception import ToolkitValueException
 from lib.controller.api import runApi
 from thirdparty.IPy import IPy
 
-# 设置 th.module_obj
+# 设置 th.module_obj,th.module_obj指向需要执行的script文件，即poc文件
 def loadModule():
     _name = conf.MODULE_NAME
     msg = 'Load custom script: %s' % _name
     logger.success(msg)
 
+    # imp提供了实现import语句的功能
     fp, pathname, description = imp.find_module(os.path.splitext(_name)[0], [paths.SCRIPT_PATH])
     try:
-        th.module_obj = imp.load_module("_", fp, pathname, description)
+        # 用来加载find_module找到的模块，第一个参数可以乱填？
+        th.module_obj = imp.load_module("_", fp, pathname, description)  # imp.load_module(name, file, pathname, description)
+        # 检查脚本文件中是否包含有必要的函数，即poc函数
         for each in ESSENTIAL_MODULE_METHODS:
-            if not hasattr(th.module_obj, each):
+            if not hasattr(th.module_obj, each):  
                 errorMsg = "Can't find essential method:'%s()' in current script，Please modify your script/PoC."
                 sys.exit(logger.error(errorMsg))
     except ImportError as e:
@@ -32,7 +35,7 @@ def loadModule():
                    % (_name, '[Error Msg]: ' + str(e), 'Maybe you can download this module from pip or easy_install')
         sys.exit(logger.error(errorMsg))
 
-# 根据target的模式，从不同的方式导入target
+# 根据target的模式，从不同的方式导入target到th.queue中
 def loadPayloads():
     infoMsg = 'Initialize targets...'
     logger.success(infoMsg)
@@ -58,12 +61,10 @@ def file_mode():
         if sub:
             th.queue.put(sub)
 
-
 def int_mode():
     _int = conf.I_NUM2.strip().split('-')
     for each in range(int(_int[0].strip()), int(_int[1].strip())):
         th.queue.put(str(each))
-
 
 def net_mode():
     ori_str = conf.NETWORK_STR
@@ -74,10 +75,8 @@ def net_mode():
     for each in _list:
         th.queue.put(str(each))
 
-
 def single_target_mode():
     th.queue.put(str(conf.SINGLE_TARGET_STR))
-
 
 def api_mode():
     # api搜索结果的保存路径，路径不存在则新建

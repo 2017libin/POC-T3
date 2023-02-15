@@ -94,7 +94,6 @@ header = """#!/usr/bin/env python
 import os
 import subprocess
 
-
 def headerCheck(path):
     parents = os.listdir(path)
     for parent in parents:

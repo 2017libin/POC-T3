@@ -6,6 +6,7 @@
 from lib.core.log import MY_LOGGER
 from lib.core.datatype import AttribDict
 
+# 相当于logger作为类MY_LOGGER的别名
 logger = MY_LOGGER
 
 # 存放文件/文件夹的绝对路径

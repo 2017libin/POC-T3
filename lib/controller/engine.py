@@ -26,6 +26,7 @@ def initEngine():
     th.is_continue = True  # 是否继续
     th.found_single = False  # 是否发现一个
     th.start_time = time.time()  # 开始时间
+    # 线程锁是不是只有多线程才需要设置？应该加一个条件判断？
     setThreadLock()  # 设置线程锁
     msg = 'Set the number of concurrent: %d' % th.threads_num
     logger.success(msg)
@@ -38,48 +39,74 @@ def singleMode():
 # 
 def scan():
     while 1:
-        if th.thread_mode: th.load_lock.acquire()
+        # 如果是多线程，那么上锁
+        # 这里的上锁操作不能放到if语句判断之后！！考虑一下临界值大小为1的情况
+        if th.thread_mode:
+            th.load_lock.acquire()
+        
+        # 如果剩余的目标大于0并且需要继续扫描
         if th.queue.qsize() > 0 and th.is_continue:
+            # 这里的payload就是目标
             payload = str(th.queue.get(timeout=1.0))
-            if th.thread_mode: th.load_lock.release()
+            if th.thread_mode:
+                th.load_lock.release()
         else:
-            if th.thread_mode: th.load_lock.release()
+            if th.thread_mode:
+                th.load_lock.release()
             break
+
         try:
             # POC在执行时报错如果不被处理，线程框架会停止并退出
-            status = th.module_obj.poc(payload)  # 执行模块中的poc函数，返回一个bool值表示验证是否通过
+            # 执行模块中的poc函数，返回的status有三种可能
+            status = th.module_obj.poc(payload)  
             resultHandler(status, payload)  # 处理结果
         except Exception:
             th.errmsg = traceback.format_exc()
             th.is_continue = False
-        # 扫描的target个数加1
+        # 已扫描的目标个数加1
         changeScanCount(1)
-        
+        # 判断是否需要将扫描时的信息进行输出
         if th.s_flag:
             printProgress()
     if th.s_flag:
         printProgress()
     
-    # Thread_count应该表示的是正在执行
+    # Thread_count应该表示的是还在执行的子线程
     changeThreadCount(-1)
 
 def run():
     # 初始化Engine
     initEngine()
     if conf.ENGINE is ENGINE_MODE_STATUS.THREAD:  # 如果engine使用thread
+        # >>> 原来的写法
+        # for i in range(th.threads_num):
+        #     t = threading.Thread(target=scan, name=str(i))
+        #     setThreadDaemon(t)
+        #     t.start()
+        # # It can quit with Ctrl-C
+        # # 相当于做了join操作？
+        # while 1:
+        #     if th. > 0 and th.is_continue:
+        #         time.sleep(0.01)
+        #     else:
+        #         break
+        
+        # >>> 改动的写法
+        thread_list = []
+        # 新建子线程
         for i in range(th.threads_num):
-            t = threading.Thread(target=scan, name=str(i))
-            setThreadDaemon(t)
+            t = threading.Thread(target=scan)
+            # 这里应该可以省略
+            # setThreadDaemon(t)
             t.start()
-        # It can quit with Ctrl-C
-        # 相当于做了join操作？
-        while 1:
-            if th.thread_count > 0 and th.is_continue:
-                time.sleep(0.01)
-            else:
-                break
-    
-    elif conf.ENGINE is ENGINE_MODE_STATUS.GEVENT:  # 如果engine使用gevent
+            thread_list.append(t)
+        
+        # 等待子线程结束
+        for t in thread_list:
+            t.join()
+        
+    # 如果engine使用gevent（协程，单线程异步）
+    elif conf.ENGINE is ENGINE_MODE_STATUS.GEVENT:
         from gevent import monkey
         monkey.patch_all()  # 将所有耗时的操作转换为gevent实现，来实现自动切换
         import gevent
@@ -97,29 +124,35 @@ def run():
     
 
 def resultHandler(status, payload):
-    # poc返回值是：不通过
+    # poc函数返回值是：不通过
     if not status or status is POC_RESULT_STATUS.FAIL:  
         return
-    # poc返回值是：重试
-    elif status is POC_RESULT_STATUS.RETRAY:
+    
+    # poc函数返回值是：重试
+    if status is POC_RESULT_STATUS.RETRAY:
         # 刚刚的扫描不算数，重新将payload放回到队列中（payload就是target）
         changeScanCount(-1)
+        # 这里需要上锁？
         th.queue.put(payload)
         return
-    # poc返回值是：通过
-    elif status is True or status is POC_RESULT_STATUS.SUCCESS:
+    
+    # poc函数返回值是：通过
+    if status is True or status is POC_RESULT_STATUS.SUCCESS:
         msg = payload
     else:
         msg = str(status)
     
-    # 标记找到一个target通过poc
+    # 找到满足条件的目标数量foundcount加1
     changeFoundCount(1)
+    
     # 输出到命令行
     if th.s_flag:
         printMessage(msg)
+        
     # 输出到文件
     if th.f_flag:
         output2file(msg)
+    
     # 如果是单例模式
     if th.single_mode:
         singleMode()
@@ -132,7 +165,6 @@ def setThreadLock():
         th.thread_count_lock = threading.Lock()
         th.file_lock = threading.Lock()  
         th.load_lock = threading.Lock()
-
 
 def setThreadDaemon(thread):
     # Reference: http://stackoverflow.com/questions/190010/daemon-threads-explanation

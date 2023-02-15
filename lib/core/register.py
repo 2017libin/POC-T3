@@ -32,9 +32,11 @@ import sys
 from lib.core.data import logger
 from lib.core.exception import RegisterDataException, RegisterMutexException, RegisterValueException
 
-
+# 使用Register.add添加(target,trigger)，trigger的作用是控制是否执行target
+# Register.run会运行满足条件的target
+# Register还可以设置mutex=true，并且设置start和end的值，来实现可以执行target的个数
 class Register:
-    # mutex是互斥开关
+    # mutex是互斥开关，如果mutex为true，那么可以执行的target的数量必须在[start，stop]范围内
     # mutex_errmsg是错误提示
     def __init__(self, start=1, stop=1, mutex_errmsg=None, mutex=True):
         self.targets = []
@@ -50,6 +52,8 @@ class Register:
     def set_mutex_errmsg(self, s):
         self.mutex_errmsg = str(s)
 
+    # trigger为True或者非空表示执行perform，否则不执行perform
+    # trigger字面意思为触发
     def add(self, perform, trigger, args=(), kwargs=None):
         if kwargs is None:
             kwargs = {}
@@ -67,7 +71,7 @@ class Register:
                 raise RegisterDataException(msg)
             target.get('perform')(*target.get('args'), **target.get('kwargs'))
 
-    # 检查target的trigger的类型和值，并添加target到verified中
+    # 将trigger为真/非空的target到verified中
     def __pretreat(self):
         # 检查target!=0、start<end
         self.__input_vector_check()
@@ -75,7 +79,7 @@ class Register:
         for __target in self.targets:
             __trigger = __target.get('trigger')
             if type(__trigger) == bool or type(__trigger) == str:
-                if __trigger:
+                if __trigger:  # 如果trigger为真或非空
                     self.verified.append(__target)
             else:
                 msg = '[Trigger Type Error] Expected:boolean,found:' + str(type(__trigger))

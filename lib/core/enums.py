@@ -3,6 +3,7 @@
 # project = https://github.com/Xyntax/POC-T
 # author = i@cdxy.me
 
+# 通过使用
 class CUSTOM_LOGGING:
     SYSINFO = 9
     SUCCESS = 8

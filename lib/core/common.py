@@ -48,7 +48,6 @@ def setPaths():
         msg += 'Please use \'--update\' to get the complete program from github.com.'
         raise ToolkitMissingPrivileges(msg)
 
-
 def checkFile(filename):
     """
     function Checks for file existence and readability
@@ -79,7 +78,7 @@ def banner():
         _ = re.sub("\033.+?m", "", _)
     dataToStdout(_)
 
-# 输出有色消息，如果是thread模式的话需要上锁来实现线程同步
+# 输出有色消息，如果是thread模式（多线程）的话需要上锁来实现互斥操作
 def dataToStdout(data, bold=False):
     """
     Writes text to the stdout (console) stream
@@ -90,7 +89,7 @@ def dataToStdout(data, bold=False):
             logging._acquireLock()
 
         if isinstance(data, str):
-            message = stdoutencode(data)
+            message = stdoutencode(data)  # str输出之前先进行编码
         else:
             message = data
 
@@ -113,7 +112,6 @@ def setColor(message, bold=False):
     if message and getattr(LOGGER_HANDLER, "is_tty", False):  # colorizing handler
         if bold:
             retVal = colored(message, color=None, on_color=None, attrs=("bold",))
-
     return retVal
 
 

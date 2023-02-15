@@ -24,10 +24,10 @@ def initOptions(args):
     
     # Register就是根据命令行参数，来为conf添加属性
     # 设置使用的多线程
-    EngineRegister(args)  # 设置conf.ENGINE
+    EngineRegister(args)  # 设置属性 ENGINE 和 THREADS_NUM
     
     # 设置脚本
-    ScriptRegister(args)
+    ScriptRegister(args)  # 设置属性 
     
     # 扫描目标
     TargetRegister(args)
@@ -38,6 +38,7 @@ def initOptions(args):
     # 输出方式
     Output(args)
     
+    # 其他设置
     Misc(args)
 
 
@@ -103,7 +104,7 @@ def ScriptRegister(args):
         sys.exit(logger.error(msg))
 
     # handle input: "-s ./script/spider.py" 
-    if os.path.split(input_path)[0]:
+    if os.path.split(input_path)[0]:  # 如果输入为 spider.py  split的结果为('', 'spider.py')
         if os.path.exists(input_path):
             if os.path.isfile(input_path):
                 if input_path.endswith('.py'):
@@ -216,6 +217,8 @@ def TargetRegister(args):
         conf.API_DORK = api_fofa
 
     msg = 'Please load targets with [-iS|-iA|-iF|-iN] or use API with [-aZ|-aS|-aG|-aF]'
+    # 只能一个生效，最终只能运行其中一个函数
+    # mutex为True表示互斥，也就是添加的函数只能运行其中一个
     r = Register(mutex=True, mutex_errmsg=msg)  # 默认start=end=1
     r.add(__file, input_file)
     r.add(__network, input_network)
@@ -237,7 +240,7 @@ def ApiRegister(args):
     google_proxy = args.google_proxy
     api_limit = args.api_limit
 
-    # 如果conf不具有API_MODE属性，也就是是通过API生成target
+    # 如果conf不具有API_MODE属性，即不是通过API生成target
     if not 'API_MODE' in conf:
         return
 

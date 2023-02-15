@@ -9,4 +9,3 @@ from lib.debug import debugMain
 
 if __name__ == '__main__':
     main()
-    # debugMain()

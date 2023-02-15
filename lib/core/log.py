@@ -23,7 +23,7 @@ try:
     try:
         # 生成一个输出带有颜色的handdler
         LOGGER_HANDLER = ColorizingStreamHandler(sys.stdout)
-        LOGGER_HANDLER.level_map[logging.getLevelName("*")] = (None, "cyan", False)
+        LOGGER_HANDLER.level_map[logging.getLevelName("*")] = (None, "cyan", False)  # cyan 青色
         LOGGER_HANDLER.level_map[logging.getLevelName("+")] = (None, "green", False)
         LOGGER_HANDLER.level_map[logging.getLevelName("-")] = (None, "red", False)
         LOGGER_HANDLER.level_map[logging.getLevelName("!")] = (None, "yellow", False)

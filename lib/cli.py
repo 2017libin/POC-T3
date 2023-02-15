@@ -17,9 +17,12 @@ from lib.core.exception import ToolkitMissingPrivileges
 from lib.core.exception import ToolkitSystemException
 from lib.controller.engine import run
 from thirdparty.colorama.initialise import init as winowsColorInit
-
-
+import thirdparty.subDomainsBrute.subDomainsBrute as subDomainsBrute
+    
 def main():
+    # options = subDomainsBrute.Optios()
+    # options.no_cert_check = True
+    # subDomainsBrute.subDomainsBrute("editor.lixiang.com", options=options)
     """
     Main function of POC-T when running from command line.
     """
@@ -36,7 +39,7 @@ def main():
         
         # 将data、script、output等绝对路径添加到paths中
         setPaths()
-
+        
         # 将命令选项进行解析，并将结果添加到cmdLineOptions中
         cmdLineOptions.update(cmdLineParser().__dict__)
         
@@ -46,7 +49,7 @@ def main():
         # 如果是WIN平台
         if IS_WIN:
             winowsColorInit()
-            
+        
         # 打印banner信息
         banner()
 
@@ -59,9 +62,10 @@ def main():
         # 
         run()
 
+        # 使用浏览器来展示输出结果
         if conf.OPEN_BROWSER:
             openBrowser()
-
+            
         systemQuit(EXIT_STATUS.SYSETM_EXIT)
 
     except ToolkitMissingPrivileges as e:

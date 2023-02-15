@@ -13,7 +13,7 @@ from lib.api.zoomeye.pack import ZoomEyeSearch
 from lib.api.google.pack import GoogleSearch
 from lib.api.fofa.pack import FofaSearch
 
-
+# 返回的是保存api搜索结果的文件的绝对路径
 def runApi():
     output = conf.API_OUTPUT
     # dork：搜索语法
