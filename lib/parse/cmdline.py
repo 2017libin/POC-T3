@@ -12,7 +12,6 @@ def cmdLineParser():
     parser = argparse.ArgumentParser(description='powered by cdxy <mail:i@cdxy.me> ',
                                      usage='python POC-T.py -s bingc -aZ "port:8080"',
                                      add_help=False)
-
     engine = parser.add_argument_group('ENGINE')
     engine.add_argument('-eT', dest="engine_thread", default=False, action='store_true',
                         help='Multi-Threaded engine (default choice)')
@@ -27,7 +26,10 @@ def cmdLineParser():
 
     script.add_argument('-s', metavar='NAME', dest="script_name", type=str, default='',
                         help='load script by name (-s jboss-rce) or path (-s ./script/jboss.py)')
-
+    # 载入多个脚本来对目标进行fuzz
+    script.add_argument('-sF', metavar='NAME FILE', dest="scripts_file", type=str, default='',
+                        help='load scripts from scriptFile (e.g. -sF ./scripts.txt)')
+    
     target = parser.add_argument_group('TARGET')
 
     target.add_argument('-iS', metavar='TARGET', dest="target_single", type=str, default='',

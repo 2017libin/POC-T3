@@ -9,6 +9,10 @@
 .svn
 .tox
 .idea
+# 忽略根目录以及其他子目录下的output文件/目录
 output
 data
-api.conf
+# 忽略根目录下的test目录
+/test/
+# 忽略根目录下的bak.conf文件/目录
+/bak.conf

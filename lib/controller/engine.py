@@ -36,7 +36,9 @@ def singleMode():
     th.is_continue = False
     th.found_single = True
 
-# 
+# paylaod 是{target:module_obj}
+# target 指的是测试目标
+# module_obj 指的是使用的测试脚本
 def scan():
     while 1:
         # 如果是多线程，那么上锁
@@ -46,19 +48,18 @@ def scan():
         
         # 如果剩余的目标大于0并且需要继续扫描
         if th.queue.qsize() > 0 and th.is_continue:
-            # 这里的payload就是目标
-            payload = str(th.queue.get(timeout=1.0))
+            # 这里的payload就是包含target、module_name和module_obj的字典
+            payload = th.queue.get(timeout=1.0)
             if th.thread_mode:
                 th.load_lock.release()
         else:
             if th.thread_mode:
                 th.load_lock.release()
             break
-
         try:
             # POC在执行时报错如果不被处理，线程框架会停止并退出
             # 执行模块中的poc函数，返回的status有三种可能
-            status = th.module_obj.poc(payload)  
+            status = payload["module_obj"].poc(payload["target"])  
             resultHandler(status, payload)  # 处理结果
         except Exception:
             th.errmsg = traceback.format_exc()
@@ -135,12 +136,12 @@ def resultHandler(status, payload):
         # 这里需要上锁？
         th.queue.put(payload)
         return
-    
+
     # poc函数返回值是：通过
     if status is True or status is POC_RESULT_STATUS.SUCCESS:
-        msg = payload
+        msg = f'{payload["module_name"]}: {payload["target"]}'
     else:
-        msg = str(status)
+        msg = f'{payload["module_name"]}: {str(status)}'
     
     # 找到满足条件的目标数量foundcount加1
     changeFoundCount(1)

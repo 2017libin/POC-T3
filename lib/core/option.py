@@ -96,41 +96,64 @@ def EngineRegister(args):
 # 设置conf.MODULE_NAME：模块名，例如 tets.py
 # 设置conf.MODULE_FILE_PATH：模块的绝对路径，例如/home/chase511/code/py-code/POC-T/script/test.py
 def ScriptRegister(args):
-    input_path = args.script_name
+    
 
     # handle input: nothing
-    if not input_path:
-        msg = 'Use -s to load script. Example: [-s spider] or [-s ./script/spider.py]'
+    if not args.script_name and not args.scripts_file:
+        msg = 'Use -s or -sF to load script. Example: [-s spider] or [-sF ./scripts.txt]'
         sys.exit(logger.error(msg))
-
-    # handle input: "-s ./script/spider.py" 
-    if os.path.split(input_path)[0]:  # 如果输入为 spider.py  split的结果为('', 'spider.py')
-        if os.path.exists(input_path):
-            if os.path.isfile(input_path):
-                if input_path.endswith('.py'):
-                    conf.MODULE_NAME = os.path.split(input_path)[-1]
-                    conf.MODULE_FILE_PATH = os.path.abspath(input_path)
+    
+    conf.MODULE_NAME = set()
+    # 从文件中导入多个脚本
+    if args.scripts_file:
+        with open(args.scripts_file, "r") as f:
+            for script_name in f.readlines():
+                script_name = script_name.strip()
+                logger.info(f"finding {script_name}...")
+                if not script_name.endswith('.py'):
+                    script_name += '.py'
+                _path = os.path.abspath(os.path.join(paths.SCRIPT_PATH, script_name))
+                if os.path.isfile(_path):
+                    conf.MODULE_NAME.add(script_name)
+                    # conf.MODULE_NAME = script_name
+                    # conf.MODULE_FILE_PATH = os.path.abspath(_path)
                 else:
-                    msg = '[%s] not a Python file. Example: [-s spider] or [-s ./script/spider.py]' % input_path
+                    msg = 'Script [%s] not exist. Use [--show] to view all available script in ./script/' % input_path
+                    sys.exit(logger.error(msg))
+
+    # 导入单个脚本
+    if args.script_name:
+        input_path = args.script_name
+        # handle input: "-s ./script/spider.py" 
+        if os.path.split(input_path)[0]:  # 如果输入为 spider.py  split的结果为('', 'spider.py')
+            if os.path.exists(input_path):
+                if os.path.isfile(input_path):
+                    if input_path.endswith('.py'):
+                        conf.MODULE_NAME.add(os.path.split(input_path)[-1])
+                        # conf.MODULE_NAME = os.path.split(input_path)[-1]
+                        # conf.MODULE_FILE_PATH = os.path.abspath(input_path)
+                    else:
+                        msg = '[%s] not a Python file. Example: [-s spider] or [-s ./script/spider.py]' % input_path
+                        sys.exit(logger.error(msg))
+                else:
+                    msg = '[%s] not a file. Example: [-s spider] or [-s ./script/spider.py]' % input_path
                     sys.exit(logger.error(msg))
             else:
-                msg = '[%s] not a file. Example: [-s spider] or [-s ./script/spider.py]' % input_path
+                msg = '[%s] not found. Example: [-s spider] or [-s ./script/spider.py]' % input_path
                 sys.exit(logger.error(msg))
-        else:
-            msg = '[%s] not found. Example: [-s spider] or [-s ./script/spider.py]' % input_path
-            sys.exit(logger.error(msg))
 
-    # handle input: "-s spider"  "-s spider.py"
-    else:
-        if not input_path.endswith('.py'):
-            input_path += '.py'
-        _path = os.path.abspath(os.path.join(paths.SCRIPT_PATH, input_path))
-        if os.path.isfile(_path):
-            conf.MODULE_NAME = input_path
-            conf.MODULE_FILE_PATH = os.path.abspath(_path)
+        # handle input: "-s spider"  "-s spider.py"
         else:
-            msg = 'Script [%s] not exist. Use [--show] to view all available script in ./script/' % input_path
-            sys.exit(logger.error(msg))
+            if not input_path.endswith('.py'):
+                input_path += '.py'
+            _path = os.path.abspath(os.path.join(paths.SCRIPT_PATH, input_path))
+            if os.path.isfile(_path):
+                conf.MODULE_NAME.add(input_path)
+                # conf.MODULE_NAME = input_path
+                # conf.MODULE_FILE_PATH = os.path.abspath(_path)
+            else:
+                msg = 'Script [%s] not exist. Use [--show] to view all available script in ./script/' % input_path
+                sys.exit(logger.error(msg))
 
 # 根据不同的target类型来设置conf
 
@@ -311,7 +334,7 @@ def Output(args):
             os.path.join(
                 paths.OUTPUT_PATH, time.strftime(
                     '[%Y%m%d-%H%M%S]', time.localtime(
-                        time.time())) + conf.MODULE_NAME + '.txt'))
+                        time.time())) + '-'.join(conf.MODULE_NAME) + '.txt'))
 
 # 设置conf.SINGLE_MODE
 # 设置conf.OPEN_BROWSER

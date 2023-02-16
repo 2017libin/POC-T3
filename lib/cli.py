@@ -72,7 +72,7 @@ def main():
     except ToolkitSystemException as e:
         logger.error(e)
         systemQuit(EXIT_STATUS.ERROR_EXIT)
-
+    
     except ToolkitUserQuitException:
         systemQuit(EXIT_STATUS.USER_QUIT)
     except KeyboardInterrupt:
