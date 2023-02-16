@@ -4,6 +4,10 @@
 import requests
 import re
 from urllib import parse as urlparse
+import queue
+import threading
+
+nowaf_domains = queue.Queue()
 dna = '''WAF:Topsec-Waf|index|index|<META NAME="Copyright" CONTENT="Topsec Network Security Technology Co.,Ltd"/>|<META NAME="DESCRIPTION" CONTENT="Topsec web UI"/>
 WAF:360|headers|X-Powered-By-360wzb|wangzhan\.360\.cn
 WAF:360|url|/wzws-waf-cgi/|360wzws
@@ -67,32 +71,60 @@ def identify(header, html):
             if re.search(reg, html, re.I):
                 # print(name)
                 return False
-    
     return True
 
-def poc(url):
-    if "." not in url:
-        return False
-    if '://' not in url:
-        url = 'http://' + url
-    if not url.endswith('/'):
-        url = url + "/"
-    try:
-        header = dict()
-        header["User-Agent"] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36<sCRiPt/SrC=//60.wf/4PrhD>"
-        header["Referer"] = url
-        r = requests.get(url, headers=header, timeout=5)
-        if r.status_code == 200:
-            f = identify(r.headers, r.text)
-            if f:
-                parse = urlparse.urlparse(r.url)
-                new_url = "%s://%s/" % (parse.scheme,parse.netloc)
-                return new_url
-            else:
-                return False
-        else:
+def nowaf(domains: queue.Queue):
+    while not domains.empty():
+        url = domains.get()
+        if "." not in url:
             return False
-    except Exception:
-        return False
+        if '://' not in url:
+            url = 'http://' + url
+        if not url.endswith('/'):
+            url = url + "/"
+        try:
+            header = dict()
+            header["User-Agent"] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36<sCRiPt/SrC=//60.wf/4PrhD>"
+            header["Referer"] = url
+            r = requests.get(url, headers=header, timeout=5)
+            if r.status_code == 200:
+                f = identify(r.headers, r.text)
+                if f:
+                    parse = urlparse.urlparse(r.url)
+                    new_url = "%s://%s/" % (parse.scheme,parse.netloc)
+                    # return new_url
+                    nowaf_domains.put(new_url)
+                else:
+                    # return False
+                    pass
+            else:
+                # return False
+                pass
+        except Exception:
+            # return False
+            pass
+    # return nowaf_domains
+
+def nowaf_multithread(domains: set, threads_num=50):
+    thread_list = []
+    # 新建子线程
+    for i in range(threads_num):
+        t = threading.Thread(target=nowaf, args=(domains,))
+        # setThreadDaemon(t)
+        t.start()
+        thread_list.append(t)
+    
+    # 等待子线程结束
+    for t in thread_list:
+        t.join()
+    return nowaf_domains
+
 if __name__ == "__main__":
-    print(poc("glxy.sdu.edu.cn/"))
+    tmp_domains = queue.Queue()
+    with open("data/test_domains.txt", "r") as f:
+        for domain in f:
+            tmp_domains.put(domain.split()[0])
+    
+    nowaf_tmp_domains = nowaf_multithread(tmp_domains)
+    while not nowaf_tmp_domains.empty():
+        print(nowaf_tmp_domains.get())

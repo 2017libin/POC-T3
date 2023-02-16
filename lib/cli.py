@@ -17,12 +17,9 @@ from lib.core.exception import ToolkitMissingPrivileges
 from lib.core.exception import ToolkitSystemException
 from lib.controller.engine import run
 from thirdparty.colorama.initialise import init as winowsColorInit
-import thirdparty.subDomainsBrute.subDomainsBrute as subDomainsBrute
+
     
 def main():
-    # options = subDomainsBrute.Optios()
-    # options.no_cert_check = True
-    # subDomainsBrute.subDomainsBrute("editor.lixiang.com", options=options)
     """
     Main function of POC-T when running from command line.
     """

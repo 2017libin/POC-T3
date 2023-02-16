@@ -38,7 +38,10 @@ def cmdLineParser():
                         help='generate array from int(start) to int(end) (e.g. 1-100)')
     target.add_argument('-iN', metavar='IP/MASK', dest="target_network", type=str, default='',
                         help='generate IP from IP/MASK. (e.g. 127.0.0.0/24)')
-
+    # 以文件的形式输入域名，生成子域名作为测试目标
+    target.add_argument('-iD', metavar='DOMAIN FILE', dest="domain_file", type=str, default='',
+                        help='generate subdomains from the domain file.')
+    
     api = parser.add_argument_group('API')
     api.add_argument('-aZ', '--zoomeye', metavar='DORK', dest="zoomeye_dork", type=str, default='',
                      help='ZoomEye dork (e.g. "zabbix port:8080")')

@@ -1,0 +1,61 @@
+abc.baidu.com                 	14.215.177.38, 14.215.177.39
+apollo.baidu.com              	106.13.248.59
+b2b.baidu.com                 	14.215.178.42
+beauty.baidu.com              	14.215.179.114
+audit.baidu.com               	10.42.3.128
+bh.baidu.com                  	182.61.62.91
+cloud.baidu.com               	14.215.177.82
+cha.baidu.com                 	14.215.178.159
+ce.baidu.com                  	110.242.68.229
+arthur.baidu.com              	180.97.93.143
+bes.baidu.com                 	112.80.248.32
+cat.baidu.com                 	180.101.49.58
+ae.baidu.com                  	110.242.68.66
+adm.baidu.com                 	220.181.38.161
+ad.baidu.com                  	182.61.62.50
+01.baidu.com                  	124.237.176.247
+apis.baidu.com                	182.61.200.85
+compass.baidu.com             	180.101.49.109
+brazil.baidu.com              	110.242.68.66
+comic.baidu.com               	14.119.104.28, 14.119.104.29
+a.baidu.com                   	112.34.113.160
+con.baidu.com                 	10.114.40.21
+ca.baidu.com                  	111.202.115.77
+cert.baidu.com                	220.181.107.211
+bar.baidu.com                 	115.239.217.137
+auto.baidu.com                	14.215.179.120, 14.215.179.121
+bao.baidu.com                 	153.3.236.132, 180.101.50.102, 36.152.45.38
+b.baidu.com                   	14.215.177.7, 14.215.177.8
+antivirus.baidu.com           	103.235.46.69
+bank.baidu.com                	14.215.179.120, 14.215.179.121
+brand.baidu.com               	39.156.66.125
+aim.baidu.com                 	110.242.69.235, 111.45.3.15, 180.101.212.84
+ask.baidu.com                 	10.58.222.200
+api.baidu.com                 	14.215.179.37
+aq.baidu.com                  	220.181.43.127
+audio.baidu.com               	14.215.179.99
+ar.baidu.com                  	124.237.176.231, 180.97.36.113
+100.baidu.com                 	124.237.177.90, 180.97.94.12
+3g.baidu.com                  	14.119.104.170, 14.215.178.36, 14.215.178.37
+af.baidu.com                  	110.242.68.110, 157.255.77.113
+ap.baidu.com                  	117.185.16.78
+author.baidu.com              	14.119.104.28, 14.119.104.29
+acc.baidu.com                 	110.242.68.248, 110.242.68.249, 112.34.116.137, 112.34.116.14, 124.237.176.215, 124.237.176.216, 14.215.179.66, 153.37.235.143, 157.255.77.110, 180.101.212.145
+ace.baidu.com                 	14.215.179.221
+activity.baidu.com            	14.215.178.234, 14.215.178.24
+ag.baidu.com                  	202.108.23.198, 202.108.23.199
+bk.baidu.com                  	14.215.177.7, 14.215.177.8
+app.baidu.com                 	14.215.177.167
+counter.baidu.com             	14.215.177.38, 14.215.177.39
+bsc.baidu.com                 	10.42.7.122
+auth.baidu.com                	220.181.107.194
+123.baidu.com                 	14.215.177.38, 14.215.177.39
+ab.baidu.com                  	180.97.104.93
+alert.baidu.com               	220.181.33.230
+ai.baidu.com                  	124.237.176.41, 180.97.104.12
+auction.baidu.com             	111.206.209.70, 220.181.33.218
+cache.baidu.com               	14.215.179.16, 14.215.179.17
+bd.baidu.com                  	111.170.26.38, 27.148.186.38
+bbs.baidu.com                 	14.215.177.221
+bms.baidu.com                 	14.215.178.42
+ac.baidu.com                  	180.97.104.203

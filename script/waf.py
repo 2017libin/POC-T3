@@ -67,7 +67,6 @@ def identify(header, html):
             if re.search(reg, html, re.I):
                 # print(name)
                 return False
-    
     return True
 
 def poc(url):

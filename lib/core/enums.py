@@ -41,6 +41,7 @@ class TARGET_MODE_STATUS:
     IPMASK = 7
     RANGE = 6
     API = 5
+    SUBDOMAIN = 4
 
 
 class ENGINE_MODE_STATUS:

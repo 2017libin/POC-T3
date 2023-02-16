@@ -139,6 +139,7 @@ def ScriptRegister(args):
     # target_single：单一扫描目标
     # target_network：生成指定网络的IP
     # target_array：生成指定范围的整型数组
+    # target_subdomains：从文件中的域名列表生成子域名
 
 # 类型2：通过API（搜索引擎）生成target
     # api_zoomeye
@@ -147,6 +148,7 @@ def ScriptRegister(args):
     # api_fofa
 def TargetRegister(args):
     input_file = args.target_file
+    domain_file = args.domain_file
     input_single = args.target_single
     input_network = args.target_network
     input_array = args.target_array
@@ -162,6 +164,13 @@ def TargetRegister(args):
         conf.TARGET_MODE = TARGET_MODE_STATUS.FILE
         conf.INPUT_FILE_PATH = input_file
 
+    def __subdomain():
+        if not os.path.isfile(domain_file):
+            msg = 'DomainsFile not found: %s' % domain_file
+            sys.exit(logger.error(msg))
+        conf.TARGET_MODE = TARGET_MODE_STATUS.SUBDOMAIN
+        conf.INPUT_DOMAIN_FILE_PATH = domain_file
+    
     def __array():
         help_str = "Invalid input in [-iA], Example: -iA 1-100"
         try:
@@ -221,6 +230,7 @@ def TargetRegister(args):
     # mutex为True表示互斥，也就是添加的函数只能运行其中一个
     r = Register(mutex=True, mutex_errmsg=msg)  # 默认start=end=1
     r.add(__file, input_file)
+    r.add(__subdomain, domain_file)
     r.add(__network, input_network)
     r.add(__array, input_array)
     r.add(__single, input_single)
