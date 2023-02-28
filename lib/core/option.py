@@ -50,11 +50,11 @@ def checkShow(args):
     show_scripts = args.show_scripts
     if show_scripts:
         # 获取所有paths.SCRIPT_PATH目录下以.py结尾的文件的绝对路径
-        module_name_list = glob.glob(os.path.join(paths.SCRIPT_PATH, '*.py'))
-        msg = 'Script Name (total:%s)\n' % str(len(module_name_list) - 1)
-        for each in module_name_list:
+        poc_name_list = glob.glob(os.path.join(paths.SCRIPT_PATH, '*.py'))
+        msg = 'Script Name (total:%s)\n' % str(len(poc_name_list) - 1)
+        for poc_name in poc_name_list:
             # 分隔路径和带后缀的文件名
-            filename_ext = os.path.split(each)[1]
+            filename_ext = os.path.split(poc_name)[1]
             # 分隔文件名和后缀
             filename = os.path.splitext(filename_ext)[0]
             if filename != '__init__':
@@ -93,7 +93,7 @@ def EngineRegister(args):
         msg = 'Invalid input in [-t], range: 1 to 100'
         sys.exit(logger.error(msg))
 
-# 设置conf.MODULE_NAME：模块名，例如 tets.py
+# 设置conf.POC_NAME：POC模块名，例如 tets.py
 # 设置conf.MODULE_FILE_PATH：模块的绝对路径，例如/home/chase511/code/py-code/POC-T/script/test.py
 def ScriptRegister(args):
     
@@ -103,7 +103,7 @@ def ScriptRegister(args):
         msg = 'Use -s or -sF to load script. Example: [-s spider] or [-sF ./scripts.txt]'
         sys.exit(logger.error(msg))
     
-    conf.MODULE_NAME = set()
+    conf.POC_NAME = set()
     # 从文件中导入多个脚本
     if args.scripts_file:
         with open(args.scripts_file, "r") as f:
@@ -114,8 +114,8 @@ def ScriptRegister(args):
                     script_name += '.py'
                 _path = os.path.abspath(os.path.join(paths.SCRIPT_PATH, script_name))
                 if os.path.isfile(_path):
-                    conf.MODULE_NAME.add(script_name)
-                    # conf.MODULE_NAME = script_name
+                    conf.POC_NAME.add(script_name)
+                    # conf.POC_NAME = script_name
                     # conf.MODULE_FILE_PATH = os.path.abspath(_path)
                 else:
                     msg = 'Script [%s] not exist. Use [--show] to view all available script in ./script/' % input_path
@@ -129,8 +129,8 @@ def ScriptRegister(args):
             if os.path.exists(input_path):
                 if os.path.isfile(input_path):
                     if input_path.endswith('.py'):
-                        conf.MODULE_NAME.add(os.path.split(input_path)[-1])
-                        # conf.MODULE_NAME = os.path.split(input_path)[-1]
+                        conf.POC_NAME.add(os.path.split(input_path)[-1])
+                        # conf.POC_NAME = os.path.split(input_path)[-1]
                         # conf.MODULE_FILE_PATH = os.path.abspath(input_path)
                     else:
                         msg = '[%s] not a Python file. Example: [-s spider] or [-s ./script/spider.py]' % input_path
@@ -148,8 +148,8 @@ def ScriptRegister(args):
                 input_path += '.py'
             _path = os.path.abspath(os.path.join(paths.SCRIPT_PATH, input_path))
             if os.path.isfile(_path):
-                conf.MODULE_NAME.add(input_path)
-                # conf.MODULE_NAME = input_path
+                conf.POC_NAME.add(input_path)
+                # conf.POC_NAME = input_path
                 # conf.MODULE_FILE_PATH = os.path.abspath(_path)
             else:
                 msg = 'Script [%s] not exist. Use [--show] to view all available script in ./script/' % input_path
@@ -170,8 +170,11 @@ def ScriptRegister(args):
     # api_google
     # api_fofa
 def TargetRegister(args):
-    input_file = args.target_file
+    # 从域名文件中生成子域名
     domain_file = args.domain_file
+    # 用于生成targets的模块名
+    target_module = args.target_module
+    input_file = args.target_file
     input_single = args.target_single
     input_network = args.target_network
     input_array = args.target_array
@@ -186,13 +189,17 @@ def TargetRegister(args):
             sys.exit(logger.error(msg))
         conf.TARGET_MODE = TARGET_MODE_STATUS.FILE
         conf.INPUT_FILE_PATH = input_file
-
+    
     def __subdomain():
         if not os.path.isfile(domain_file):
             msg = 'DomainsFile not found: %s' % domain_file
             sys.exit(logger.error(msg))
         conf.TARGET_MODE = TARGET_MODE_STATUS.SUBDOMAIN
         conf.INPUT_DOMAIN_FILE_PATH = domain_file
+    
+    def __module():
+        conf.TRAGET_MODE = TARGET_MODE_STATUS.MODULE
+        conf.TARGET_MODULE_NAME = target_module
     
     def __array():
         help_str = "Invalid input in [-iA], Example: -iA 1-100"
@@ -261,6 +268,7 @@ def TargetRegister(args):
     r.add(__shodan, api_shodan)
     r.add(__google, api_google)
     r.add(__fofa, api_fofa)
+    r.add(__module, target_module)
     r.run()
 
 # 设置conf.offset：
@@ -334,7 +342,7 @@ def Output(args):
             os.path.join(
                 paths.OUTPUT_PATH, time.strftime(
                     '[%Y%m%d-%H%M%S]', time.localtime(
-                        time.time())) + '-'.join(conf.MODULE_NAME) + '.txt'))
+                        time.time())) + '-'.join(conf.POC_NAME) + '.txt'))
 
 # 设置conf.SINGLE_MODE
 # 设置conf.OPEN_BROWSER

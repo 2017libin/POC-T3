@@ -26,6 +26,7 @@ def cmdLineParser():
 
     script.add_argument('-s', metavar='NAME', dest="script_name", type=str, default='',
                         help='load script by name (-s jboss-rce) or path (-s ./script/jboss.py)')
+    
     # 载入多个脚本来对目标进行fuzz
     script.add_argument('-sF', metavar='NAME FILE', dest="scripts_file", type=str, default='',
                         help='load scripts from scriptFile (e.g. -sF ./scripts.txt)')
@@ -40,9 +41,14 @@ def cmdLineParser():
                         help='generate array from int(start) to int(end) (e.g. 1-100)')
     target.add_argument('-iN', metavar='IP/MASK', dest="target_network", type=str, default='',
                         help='generate IP from IP/MASK. (e.g. 127.0.0.0/24)')
+    
     # 以文件的形式输入域名，生成子域名作为测试目标
     target.add_argument('-iD', metavar='DOMAIN FILE', dest="domain_file", type=str, default='',
                         help='generate subdomains from the domain file.')
+    
+    # 调用TARGET模块中get_targets函数来获取测试目标
+    target.add_argument('-iM', metavar='TARGET MODULE', dest="target_module", type=str, default='',
+                        help='generate targets from the target_module.get_targets() function.')
     
     api = parser.add_argument_group('API')
     api.add_argument('-aZ', '--zoomeye', metavar='DORK', dest="zoomeye_dork", type=str, default='',

@@ -93,5 +93,6 @@ def poc(url):
             return False
     except Exception:
         return False
+
 if __name__ == "__main__":
     print(poc("glxy.sdu.edu.cn/"))

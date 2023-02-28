@@ -14,30 +14,30 @@ from lib.core.exception import ToolkitValueException
 from lib.controller.api import runApi
 from thirdparty.IPy import IPy
 
-# 设置 th.module,th.module_obj指向需要执行的script文件，即poc文件
+# 设置 th.module,th.poc_modules指向需要执行的POC模块
 def loadModule():
-    th.module = dict()
-    # _name = conf.MODULE_NAME
-    for index, module_name in enumerate(conf.MODULE_NAME):
-        msg = 'Load custom script: %s' % module_name
+    th.poc_modules = dict()
+    # _name = conf.POC_NAME
+    for index, poc_name in enumerate(conf.POC_NAME):
+        msg = 'Load custom script: %s' % poc_name
         logger.success(msg)
 
         # imp提供了实现import语句的功能
-        fp, pathname, description = imp.find_module(os.path.splitext(module_name)[0], [paths.SCRIPT_PATH])
+        fp, pathname, description = imp.find_module(os.path.splitext(poc_name)[0], [paths.SCRIPT_PATH])
         try:
             # 用来加载find_module找到的模块，第一个参数可以乱填？不行！否则都是指向同一个module！！
-            module_obj = imp.load_module(f"_{index}", fp, pathname, description)  # imp.load_module(name, file, pathname, description)
+            poc_module = imp.load_module(f"_{index}", fp, pathname, description)  # imp.load_module(name, file, pathname, description)
             # 检查脚本文件中是否包含有必要的函数，即poc函数
             for each in ESSENTIAL_MODULE_METHODS:
-                if not hasattr(module_obj, each):  
+                if not hasattr(poc_module, each):  
                     errorMsg = "Can't find essential method:'%s()' in current script, Please modify your script/PoC."
                     sys.exit(logger.error(errorMsg))
             
-            logger.info(f"add {module_obj} to th.module")
-            th.module[module_name]=module_obj
+            logger.info(f"add {poc_module} to th.module")
+            th.poc_modules[poc_name]=poc_module
         except ImportError as e:
             errorMsg = "Your current scipt [%s] caused this exception\n%s\n%s" \
-                    % (module_name, '[Error Msg]: ' + str(e), 'Maybe you can download this module from pip or easy_install')
+                    % (poc_name, '[Error Msg]: ' + str(e), 'Maybe you can download this module from pip or easy_install')
             sys.exit(logger.error(errorMsg))
 
 # 根据target的模式，从不同的方式导入target到th.queue中
@@ -66,15 +66,15 @@ def loadPayloads():
     tmp_queue = queue.Queue()
     while not th.queue.empty():
         target = th.queue.get()
-        for module_name, module_obj in th.module.items():
-            payload = dict()
-            payload["target"] = target
-            payload["module_obj"] = module_obj
-            payload["module_name"] = module_name
-            tmp_queue.put(payload)
+        for poc_name, poc_module in th.poc_modules.items():
+            job = dict()
+            job["target"] = target
+            job["poc_module"] = poc_module
+            job["poc_name"] = poc_name
+            tmp_queue.put(job)
     th.queue = tmp_queue
     
-    logger.success(f'Total payload: {str(th.queue.qsize())}, Total module: {len(th.module)}')
+    logger.success(f'Total jobs: {str(th.queue.qsize())}, Total modules: {len(th.poc_modules)}')
 
 def file_mode():
     for line in open(conf.INPUT_FILE_PATH):
@@ -110,6 +110,13 @@ def api_mode():
         sub = line.strip()
         if sub:
             th.queue.put(sub)
+
+def test_module():
+    pass
+
+def module_mode():
+    for target in test_module():
+        th.queue.put(target)
 
 def subdomain_mode():
     import thirdparty.subDomainsBrute.subDomainsBrute as subDomainsBrute
@@ -163,10 +170,8 @@ def subdomain_mode():
     # 过滤出没有waf的子域名？可访问的域名？
     th.queue = nowaf.nowaf_multithread(th.queue)
     
-    # print(f"size of th.queue is {th.queue.qsize()}")
-    # while not th.queue.empty():
-    #     print(th.queue.get())
-    
-    # 调试信息
-    # print(all_subdomains)
-    # sys.exit(logger.info("exited by aoaoao"))
+    # 调试打印信息
+    logger.success(f"generate {th.queue.qsize()} targets")
+    while not th.queue.empty():
+        logger.info(th.queue.get())
+    exit(1)

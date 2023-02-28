@@ -42,6 +42,7 @@ class TARGET_MODE_STATUS:
     RANGE = 6
     API = 5
     SUBDOMAIN = 4
+    MODULE = 3
 
 
 class ENGINE_MODE_STATUS:
