@@ -117,7 +117,7 @@ def run():
 
     if 'errmsg' in th:
         logger.error(th.errmsg)
-
+    
     if th.found_single:
         msg = "[single-mode] found!"
         logger.info(msg)

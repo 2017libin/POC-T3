@@ -11,6 +11,7 @@
 .idea
 # 忽略根目录以及其他子目录下的output文件/目录
 output
+# 忽略根目录以及其他子目录下的data文件/目录
 data
 # 忽略根目录下的test目录
 /test/

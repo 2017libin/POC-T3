@@ -94,7 +94,7 @@ except (AttributeError, ImportError):
         ssl_sock = socket.ssl(sock, key_file, cert_file)
         return httplib.FakeSocket(sock, ssl_sock)
 
-print(sys.version_info)
+# print(sys.version_info)
 if sys.version_info >= (2,3):
     from .iri2uri import iri2uri
 else:

@@ -7,7 +7,7 @@ import os.path
 import traceback
 from lib.parse.cmdline import cmdLineParser
 from lib.core.option import initOptions
-from lib.controller.loader import loadModule, loadPayloads
+from lib.controller.loader import loadPOCModules, loadJobs
 from lib.core.common import setPaths, banner, systemQuit, openBrowser
 from lib.core.data import paths, conf, logger, cmdLineOptions  # 这四个变量是类型为dict的实例
 from lib.core.enums import EXIT_STATUS
@@ -50,11 +50,11 @@ def main():
         # 打印banner信息
         banner()
 
-        # 设置th.module_obj
-        loadModule()
+        # 将需要使用的POC模块加入th.poc_modules
+        loadPOCModules()
         
-        # 设置th.queue，存入target
-        loadPayloads()
+        # 设置th.queue，存入待执行的任务
+        loadJobs()
 
         # 
         run()

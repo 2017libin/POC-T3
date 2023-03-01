@@ -15,7 +15,10 @@ LICENSE = 'GPLv2'
 IS_WIN = subprocess._mswindows
 
 # essential methods/functions in custom scripts/PoC (such as function poc())
-ESSENTIAL_MODULE_METHODS = ['poc']
+ESSENTIAL_POC_MODULE_METHODS = ['poc']
+
+ESSENTIAL_TARGET_MODULE_METHODS = ['get_targets']
+
 
 # Encoding used for Unicode data
 UNICODE_ENCODING = "utf-8"

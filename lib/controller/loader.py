@@ -9,13 +9,13 @@ import imp
 import os
 from lib.core.data import th, conf, logger, paths
 from lib.core.enums import API_MODE_NAME, TARGET_MODE_STATUS
-from lib.core.settings import ESSENTIAL_MODULE_METHODS
+from lib.core.settings import ESSENTIAL_POC_MODULE_METHODS, ESSENTIAL_TARGET_MODULE_METHODS
 from lib.core.exception import ToolkitValueException
 from lib.controller.api import runApi
 from thirdparty.IPy import IPy
 
-# 设置 th.module,th.poc_modules指向需要执行的POC模块
-def loadModule():
+# 设置 th.poc_modules, 指向需要执行的POC模块
+def loadPOCModules():
     th.poc_modules = dict()
     # _name = conf.POC_NAME
     for index, poc_name in enumerate(conf.POC_NAME):
@@ -28,12 +28,12 @@ def loadModule():
             # 用来加载find_module找到的模块，第一个参数可以乱填？不行！否则都是指向同一个module！！
             poc_module = imp.load_module(f"_{index}", fp, pathname, description)  # imp.load_module(name, file, pathname, description)
             # 检查脚本文件中是否包含有必要的函数，即poc函数
-            for each in ESSENTIAL_MODULE_METHODS:
+            for each in ESSENTIAL_POC_MODULE_METHODS:
                 if not hasattr(poc_module, each):  
                     errorMsg = "Can't find essential method:'%s()' in current script, Please modify your script/PoC."
                     sys.exit(logger.error(errorMsg))
             
-            logger.info(f"add {poc_module} to th.module")
+            logger.info(f"add {poc_module} to th.poc_modules")
             th.poc_modules[poc_name]=poc_module
         except ImportError as e:
             errorMsg = "Your current scipt [%s] caused this exception\n%s\n%s" \
@@ -41,12 +41,12 @@ def loadModule():
             sys.exit(logger.error(errorMsg))
 
 # 根据target的模式，从不同的方式导入target到th.queue中
-def loadPayloads():
-    infoMsg = 'Initialize targets...'
+def loadJobs():
+    infoMsg = 'Start getting targets...'
     logger.success(infoMsg)
     th.queue = queue.Queue()
     
-    # 获取目标
+    # 获取测试目标
     if conf.TARGET_MODE is TARGET_MODE_STATUS.RANGE:
         int_mode()
     elif conf.TARGET_MODE is TARGET_MODE_STATUS.FILE:
@@ -59,6 +59,8 @@ def loadPayloads():
         api_mode()
     elif conf.TARGET_MODE is TARGET_MODE_STATUS.SUBDOMAIN:
         subdomain_mode()
+    elif conf.TARGET_MODE is TARGET_MODE_STATUS.MODULE:
+        module_mode()
     else:
         raise ToolkitValueException('conf.TARGET_MODE value ERROR.')
     
@@ -111,13 +113,32 @@ def api_mode():
         if sub:
             th.queue.put(sub)
 
-def test_module():
-    pass
-
+# 导入目标模块，调用目标模块的get_targets函数获取测试目标列表
 def module_mode():
-    for target in test_module():
-        th.queue.put(target)
+    # 导入target_module
+    msg = f"Load {conf.TARGET_MODULE_NAME} for getting targets"
+    logger.success(msg)
+    module_name = conf.TARGET_MODULE_NAME
+    fp, pathname, description = imp.find_module(module_name, [paths.TARGET_MODULE_PATH])
+    try:
+        # 用来加载find_module找到的模块，第一个参数可以乱填？不行！否则都是指向同一个module！！
+        target_module = imp.load_module(f"{module_mode}", fp, pathname, description)  # imp.load_module(name, file, pathname, description)
+        # 检查脚本文件中是否包含有必要的函数，即get_targets函数
+        for each in ESSENTIAL_TARGET_MODULE_METHODS:
+            if not hasattr(target_module, each):  
+                errorMsg = f"Can't find essential method:'{each}()' in {module_mode} module, Please modify your script/PoC."
+                sys.exit(logger.error(errorMsg))
+        
+        logger.info(f"Successfully add {module_name}")
+    except ImportError as e:
+        errorMsg = "Your current target module [%s] caused this exception\n%s\n%s" \
+                % (module_name, '[Error Msg]: ' + str(e), 'Maybe you can download this module from pip or easy_install')
+        sys.exit(logger.error(errorMsg))
 
+    # 调用get_targets函数获取测试目标
+    for target in target_module.get_targets():
+        th.queue.put(target)
+    
 def subdomain_mode():
     import thirdparty.subDomainsBrute.subDomainsBrute as subDomainsBrute
     import plugin.nowaf as nowaf
@@ -161,8 +182,6 @@ def subdomain_mode():
                 if domain not in all_subdomains:
                     all_subdomains.add(domain)       # cname query can result in duplicated domains
     
-    
-    
     # 将过滤后的子域名加入队列作为测试目标
     for subdomains in all_subdomains:   
         th.queue.put(str(subdomains))
@@ -171,7 +190,7 @@ def subdomain_mode():
     th.queue = nowaf.nowaf_multithread(th.queue)
     
     # 调试打印信息
-    logger.success(f"generate {th.queue.qsize()} targets")
+    logger.success(f"Get {th.queue.qsize()} targets from subdomain module")
     while not th.queue.empty():
         logger.info(th.queue.get())
-    exit(1)
+    # exit(1)

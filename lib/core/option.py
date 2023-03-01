@@ -121,7 +121,7 @@ def ScriptRegister(args):
                     msg = 'Script [%s] not exist. Use [--show] to view all available script in ./script/' % input_path
                     sys.exit(logger.error(msg))
 
-    # 导入单个脚本
+    # 从命令行参数导入单个脚本
     if args.script_name:
         input_path = args.script_name
         # handle input: "-s ./script/spider.py" 
@@ -198,7 +198,7 @@ def TargetRegister(args):
         conf.INPUT_DOMAIN_FILE_PATH = domain_file
     
     def __module():
-        conf.TRAGET_MODE = TARGET_MODE_STATUS.MODULE
+        conf.TARGET_MODE = TARGET_MODE_STATUS.MODULE
         conf.TARGET_MODULE_NAME = target_module
     
     def __array():

@@ -1,0 +1,6 @@
+db.chehejia.com               	172.17.10.15
+crs.chehejia.com              	172.21.10.11
+ops.chehejia.com              	172.21.242.9
+srm.chehejia.com              	106.12.163.244
+oa.chehejia.com               	192.168.11.20
+wiki.chehejia.com             	192.168.1.228
