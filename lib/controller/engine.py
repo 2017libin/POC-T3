@@ -16,6 +16,7 @@ from lib.core.enums import POC_RESULT_STATUS, ENGINE_MODE_STATUS
 def initEngine():
     th.thread_mode = True if conf.ENGINE is ENGINE_MODE_STATUS.THREAD else False  # 如果是Thread为True，是gevent则为False
     th.poc_name = conf.POC_NAME
+    th.w_flag = conf.WECHAT_OUTPUT  # 标记是否微信通知
     th.f_flag = conf.FILE_OUTPUT  # 标记是否输出文件
     th.s_flag = conf.SCREEN_OUTPUT  # 标记是否输出到屏幕
     th.output = conf.OUTPUT_FILE_PATH  # 输出的文件路径
@@ -122,6 +123,14 @@ def run():
         msg = "[single-mode] found!"
         logger.info(msg)
     
+    # 检查是否需要微信通知
+    if conf.WECHAT_OUTPUT:
+        from lib.utils.wechat_notification import notification,read_file
+        # 如果发现的测试目标不为0，则从测试结果文件中获取结果
+        if th.found_count:
+            notification("babySRC测试结果", read_file(conf.OUTPUT_FILE_PATH))
+        else:
+            notification("babySRC测试结果", "NULL")
 
 def resultHandler(status, payload):
     # poc函数返回值是：不通过
@@ -150,7 +159,7 @@ def resultHandler(status, payload):
         printMessage(msg)
         
     # 输出到文件
-    if th.f_flag:
+    if th.f_flag or th.w_flag:
         output2file(msg)
     
     # 如果是单例模式

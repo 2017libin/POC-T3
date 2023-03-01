@@ -94,7 +94,7 @@ def EngineRegister(args):
         sys.exit(logger.error(msg))
 
 # 设置conf.POC_NAME：POC模块名，例如 tets.py
-# 设置conf.MODULE_FILE_PATH：模块的绝对路径，例如/home/chase511/code/py-code/POC-T/script/test.py
+# 设置conf.POC_MODULE_PATH：POC模块的绝对路径，例如/home/chase511/code/py-code/POC-T/script/test.py
 def ScriptRegister(args):
     
 
@@ -116,7 +116,7 @@ def ScriptRegister(args):
                 if os.path.isfile(_path):
                     conf.POC_NAME.add(script_name)
                     # conf.POC_NAME = script_name
-                    # conf.MODULE_FILE_PATH = os.path.abspath(_path)
+                    # conf.POC_MODULE_PATH = os.path.abspath(_path)
                 else:
                     msg = 'Script [%s] not exist. Use [--show] to view all available script in ./script/' % input_path
                     sys.exit(logger.error(msg))
@@ -131,7 +131,7 @@ def ScriptRegister(args):
                     if input_path.endswith('.py'):
                         conf.POC_NAME.add(os.path.split(input_path)[-1])
                         # conf.POC_NAME = os.path.split(input_path)[-1]
-                        # conf.MODULE_FILE_PATH = os.path.abspath(input_path)
+                        # conf.POC_MODULE_PATH = os.path.abspath(input_path)
                     else:
                         msg = '[%s] not a Python file. Example: [-s spider] or [-s ./script/spider.py]' % input_path
                         sys.exit(logger.error(msg))
@@ -150,7 +150,7 @@ def ScriptRegister(args):
             if os.path.isfile(_path):
                 conf.POC_NAME.add(input_path)
                 # conf.POC_NAME = input_path
-                # conf.MODULE_FILE_PATH = os.path.abspath(_path)
+                # conf.POC_MODULE_PATH = os.path.abspath(_path)
             else:
                 msg = 'Script [%s] not exist. Use [--show] to view all available script in ./script/' % input_path
                 sys.exit(logger.error(msg))
@@ -319,6 +319,7 @@ def Output(args):
     output_file = args.output_path
     file_status = args.output_file_status
     screen_status = args.output_screen_status
+    wechat_status = args.output_wechat_status
     browser = args.open_browser
 
     # not file_status为真：表示不输出到文件
@@ -333,6 +334,7 @@ def Output(args):
         msg = '[--browser] is based on file output, please remove [-oF] in your command and try again.'
         sys.exit(logger.error(msg))
 
+    conf.WECHAT_OUTPUT = wechat_status
     conf.SCREEN_OUTPUT = screen_status
     conf.FILE_OUTPUT = file_status
     # 如果指定文件名，则根据文件名生成绝对路径

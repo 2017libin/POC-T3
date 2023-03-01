@@ -53,3 +53,6 @@ class ConfigFileParser:
 
     def FofaKey(self):
         return self._get_option('fofa','api_key')
+    
+    def ServerJiangSendKey(self):
+        return self._get_option('ServerJiang', 'send_key')

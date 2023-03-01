@@ -72,7 +72,9 @@ def cmdLineParser():
                         help='disable file output')
     output.add_argument('-oS', '--no-screen', dest="output_screen_status", default=True, action='store_false',
                         help='disable screen output')
-
+    # 通过微信进行通知
+    output.add_argument('-oW', '--wechat-notification', dest="output_wechat_status", default=False, action='store_true',
+                        help='enable wechat output')
     # 其他
     misc = parser.add_argument_group('MISC')
     misc.add_argument('--single', dest="single_mode", default=False, action='store_true',
